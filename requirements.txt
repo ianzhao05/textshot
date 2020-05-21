@@ -1,0 +1,9 @@
+EasyProcess==0.3
+entrypoint2==0.2.1
+mss==5.1.0
+Pillow==7.1.2
+pyperclip==1.8.0
+PyQt5==5.14.2
+PyQt5-sip==12.7.2
+pyscreenshot==2.2
+pytesseract==0.3.4
