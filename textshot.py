@@ -68,9 +68,10 @@ def processImage(img):
     try:
         result = pytesseract.image_to_string(img, timeout=2)
     except RuntimeError:
-        result = "UNABLE TO READ"
+        return
 
-    pyperclip.copy(result)
+    if result:
+        pyperclip.copy(result)
 
 
 if __name__ == "__main__":
