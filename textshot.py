@@ -66,7 +66,7 @@ class Snipper(QtWidgets.QWidget):
 
 def processImage(img):
     try:
-        result = pytesseract.image_to_string(img, timeout=2)
+        result = pytesseract.image_to_string(img, timeout=2, lang=(sys.argv[1] if len(sys.argv) > 1 else None))
     except RuntimeError:
         return
 
