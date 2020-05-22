@@ -6,7 +6,9 @@ This tool gives users the ability to take a screenshot and copy to the clipboard
 
 Running `textshot.py` will open an overlay over the screen, where a rectangle can be drawn over the portion of the screen containing the text the user wishes to copy.
 
-It is recommended to attach a global hotkey to this tool.  
+An optional command line argument can specifiy the language. For example, `python textshot.py eng+fra` will use English as the primary language and French as the secondary language. The default is `eng` (English). Make sure that the appropriate data files for Tesseract are installed for other languages.
+
+It is recommended to attach a global hotkey to this tool.
 
 On **Windows**, one can accomplish this by using an [AutoHotkey](https://www.autohotkey.com/) script; `textshot.ahk` contains a sample AHK script that can be used.  
 On **Ubuntu**, open the Keyboard Settings, which shows you all the Gnome shortcuts. At the bottom there is a `+` button to add your own shortcuts. Click it and set the command to `/usr/bin/python3 <path-to-textshot.py>`. In case you are using a venv, the python3 path above should point to the venv's python3 instead of the global python3.
