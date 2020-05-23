@@ -96,9 +96,10 @@ if __name__ == "__main__":
         subprocess.call(["tesseract"], stdout=FNULL, stderr=subprocess.STDOUT)
     except (FileNotFoundError, OSError):
         Notification(
-            title="An error occured: tesseract is either not installed yet or cannot be reached. Have you tried "
-                  "installing it or adding the directory where it is located to your system path?"
-        )
+            title="textshot",
+            description="An error occurred: tesseract is either not installed yet or cannot be reached. Have you tried "
+                        "installing it or adding the directory where it is located to your system path?"
+        ).send()
         print("error: it seems like tesseract is either not installed yet or cannot be reached by your terminal. have "
               "you tried installing it or adding the directory where it is located to your system path?")
         sys.exit()
