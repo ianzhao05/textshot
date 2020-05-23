@@ -7,6 +7,8 @@ import pyscreenshot as ImageGrab
 import pytesseract
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
+import subprocess
+from pynotifier import Notification
 
 
 class Snipper(QtWidgets.QWidget):
@@ -69,14 +71,29 @@ def processImage(img):
         result = pytesseract.image_to_string(
             img, timeout=2, lang=(sys.argv[1] if len(sys.argv) > 1 else None)
         )
-    except RuntimeError:
+    except RuntimeError as error:
+        print(f"error: an error has occurred when trying to process the image: {error}")
         return
 
     if result:
         pyperclip.copy(result)
+        Notification(
+            title="textshot",
+            description=f"Copied '{result}' to the clipboard"
+        ).send()
 
 
 if __name__ == "__main__":
+    try:
+        FNULL = open(os.devnull, "w")
+
+        # this is how pytesseract (basically) calls tesseract.
+        subprocess.call(["tesseract"], stdout=FNULL, stderr=subprocess.STDOUT)
+    except (FileNotFoundError, OSError):
+        print("error: it seems like tesseract is either not installed yet or cannot be reached by your terminal. have "
+              "you tried installing it or adding the directory where it is located to your system path?")
+        sys.exit()
+
     if os.name == "nt":
         ctypes.windll.user32.SetProcessDPIAware()
 

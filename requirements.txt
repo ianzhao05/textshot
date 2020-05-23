@@ -7,3 +7,5 @@ PyQt5==5.14.2
 PyQt5-sip==12.7.2
 pyscreenshot==2.2
 pytesseract==0.3.4
+py-notifier==0.1.0
+wintoast10==0.9; platform_system == "Windows"
