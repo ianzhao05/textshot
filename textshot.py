@@ -5,10 +5,9 @@ import sys
 import pyperclip
 import pyscreenshot as ImageGrab
 import pytesseract
+from pynotifier import Notification
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
-import subprocess
-from pynotifier import Notification
 
 
 class Snipper(QtWidgets.QWidget):
@@ -89,11 +88,8 @@ def processImage(img):
 
 if __name__ == "__main__":
     try:
-        FNULL = open(os.devnull, "w")
-
-        # this is how pytesseract (basically) calls tesseract.
-        subprocess.call(["tesseract"], stdout=FNULL, stderr=subprocess.STDOUT)
-    except (FileNotFoundError, OSError):
+        pytesseract.get_tesseract_version()
+    except EnvironmentError:
         Notification(
             title="TextShot",
             description="Tesseract is either not installed or cannot be reached.\nHave you installed it and added the install directory to your system path?",
