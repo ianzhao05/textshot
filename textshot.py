@@ -72,34 +72,29 @@ def processImage(img):
         )
     except RuntimeError as error:
         print(f"ERROR: An error occurred when trying to process the image: {error}")
-        Notification(
-            title="TextShot",
-            description=f"An error occurred when trying to process the image: {error}",
-        ).send()
+        notify(f"An error occurred when trying to process the image: {error}")
         return
 
     if result:
         pyperclip.copy(result)
         print(f'INFO: Copied "{result}" to the clipboard')
-        Notification(
-            title="TextShot", description=f'Copied "{result}" to the clipboard'
-        ).send()
+        notify(f'Copied "{result}" to the clipboard')
     else:
         print(f"INFO: Unable to read text from image, did not copy")
-        Notification(
-            title="TextShot",
-            description=f"Unable to read text from image, did not copy",
-        ).send()
+        notify(f"Unable to read text from image, did not copy")
+
+
+def notify(msg):
+    Notification(title="TextShot", description=msg).send()
 
 
 if __name__ == "__main__":
     try:
         pytesseract.get_tesseract_version()
     except EnvironmentError:
-        Notification(
-            title="TextShot",
-            description="Tesseract is either not installed or cannot be reached.\nHave you installed it and added the install directory to your system path?",
-        ).send()
+        notify(
+            "Tesseract is either not installed or cannot be reached.\nHave you installed it and added the install directory to your system path?"
+        )
         print(
             "ERROR: Tesseract is either not installed or cannot be reached.\nHave you installed it and added the install directory to your system path?"
         )
