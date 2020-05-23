@@ -84,6 +84,12 @@ def processImage(img):
         Notification(
             title="TextShot", description=f'Copied "{result}" to the clipboard'
         ).send()
+    else:
+        print(f"INFO: Unable to read text from image, did not copy")
+        Notification(
+            title="TextShot",
+            description=f"Unable to read text from image, did not copy",
+        ).send()
 
 
 if __name__ == "__main__":
