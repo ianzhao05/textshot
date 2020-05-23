@@ -73,10 +73,15 @@ def processImage(img):
         )
     except RuntimeError as error:
         print(f"error: an error has occurred when trying to process the image: {error}")
+        Notification(
+            title="textshot",
+            description=f"An error occurred when trying to process the image: {error}"
+        ).send()
         return
 
     if result:
         pyperclip.copy(result)
+        print(f"info: copied '{result}' to the clipboard")
         Notification(
             title="textshot",
             description=f"Copied '{result}' to the clipboard"
