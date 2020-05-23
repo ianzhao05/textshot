@@ -93,10 +93,12 @@ if __name__ == "__main__":
         pytesseract.get_tesseract_version()
     except EnvironmentError:
         notify(
-            "Tesseract is either not installed or cannot be reached.\nHave you installed it and added the install directory to your system path?"
+            "Tesseract is either not installed or cannot be reached.\n"
+            "Have you installed it and added the install directory to your system path?"
         )
         print(
-            "ERROR: Tesseract is either not installed or cannot be reached.\nHave you installed it and added the install directory to your system path?"
+            "ERROR: Tesseract is either not installed or cannot be reached.\n"
+            "Have you installed it and added the install directory to your system path?"
         )
         sys.exit()
 
