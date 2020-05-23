@@ -85,7 +85,10 @@ def processImage(img):
 
 
 def notify(msg):
-    Notification(title="TextShot", description=msg).send()
+    try:
+        Notification(title="TextShot", description=msg).send()
+    except SystemError:
+        pass
 
 
 if __name__ == "__main__":
