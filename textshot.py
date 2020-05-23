@@ -72,19 +72,18 @@ def processImage(img):
             img, timeout=2, lang=(sys.argv[1] if len(sys.argv) > 1 else None)
         )
     except RuntimeError as error:
-        print(f"error: an error has occurred when trying to process the image: {error}")
+        print(f"ERROR: An error occurred when trying to process the image: {error}")
         Notification(
-            title="textshot",
-            description=f"An error occurred when trying to process the image: {error}"
+            title="TextShot",
+            description=f"An error occurred when trying to process the image: {error}",
         ).send()
         return
 
     if result:
         pyperclip.copy(result)
-        print(f"info: copied '{result}' to the clipboard")
+        print(f'INFO: Copied "{result}" to the clipboard')
         Notification(
-            title="textshot",
-            description=f"Copied '{result}' to the clipboard"
+            title="TextShot", description=f'Copied "{result}" to the clipboard'
         ).send()
 
 
@@ -96,12 +95,12 @@ if __name__ == "__main__":
         subprocess.call(["tesseract"], stdout=FNULL, stderr=subprocess.STDOUT)
     except (FileNotFoundError, OSError):
         Notification(
-            title="textshot",
-            description="An error occurred: tesseract is either not installed yet or cannot be reached. Have you tried "
-                        "installing it or adding the directory where it is located to your system path?"
+            title="TextShot",
+            description="Tesseract is either not installed or cannot be reached.\nHave you installed it and added the install directory to your system path?",
         ).send()
-        print("error: it seems like tesseract is either not installed yet or cannot be reached by your terminal. have "
-              "you tried installing it or adding the directory where it is located to your system path?")
+        print(
+            "ERROR: Tesseract is either not installed or cannot be reached.\nHave you installed it and added the install directory to your system path?"
+        )
         sys.exit()
 
     if os.name == "nt":
