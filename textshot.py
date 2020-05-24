@@ -5,13 +5,13 @@ import sys
 import pyperclip
 import pyscreenshot as ImageGrab
 import pytesseract
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
 
 try:
     from pynotifier import Notification
 except ImportError:
     pass
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import Qt
 
 
 class Snipper(QtWidgets.QWidget):
