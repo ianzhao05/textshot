@@ -5,6 +5,7 @@ import sys
 import pyperclip
 import pyscreenshot as ImageGrab
 import pytesseract
+
 try:
     from pynotifier import Notification
 except ImportError:
@@ -90,7 +91,7 @@ def processImage(img):
 def notify(msg):
     try:
         Notification(title="TextShot", description=msg).send()
-    except NameError:
+    except (SystemError, NameError):
         pass
 
 
