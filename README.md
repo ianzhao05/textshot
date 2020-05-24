@@ -2,6 +2,8 @@
 
 This tool gives users the ability to take a screenshot and copy to the clipboard the text content of the screenshot.
 
+![TextShot Demo](https://i.imgur.com/BSMCh3r.gif)
+
 ## Use
 
 Running `textshot.py` will open an overlay over the screen, where a rectangle can be drawn over the portion of the screen containing the text the user wishes to copy.
