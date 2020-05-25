@@ -1,4 +1,11 @@
-# TextShot
+<h1 align="center">TextShot</h2>
+
+<div align="center">
+<a href="https://github.com/ianzhao05/textshot/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/ianzhao05/textshot"></a>
+<a href="https://github.com/ianzhao05/textshot/network"><img alt="GitHub forks" src="https://img.shields.io/github/forks/ianzhao05/textshot"></a>
+<a href="https://github.com/ianzhao05/textshot/blob/master/LICENSE.txt"><img alt="GitHub license" src="https://img.shields.io/github/license/ianzhao05/textshot"></a>
+<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+</div>
 
 This tool gives users the ability to take a screenshot and copy to the clipboard the text content of the screenshot.
 
