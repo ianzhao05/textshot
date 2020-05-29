@@ -24,7 +24,13 @@ class Snipper(QtWidgets.QWidget):
         self.setWindowFlags(
             Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Dialog
         )
-        self.setWindowState(self.windowState() | Qt.WindowFullScreen)
+
+        self.is_macos = sys.platform.startswith("darwin")
+        if self.is_macos:
+            self.setWindowState(self.windowState() | Qt.WindowMaximized)
+        else:
+            self.setWindowState(self.windowState() | Qt.WindowFullScreen)
+
         self.setStyleSheet("background-color: black")
         self.setWindowOpacity(0.5)
 
@@ -45,16 +51,24 @@ class Snipper(QtWidgets.QWidget):
         painter = QtGui.QPainter(self)
         painter.setPen(QtGui.QPen(QtGui.QColor(255, 255, 255), 3))
         painter.setBrush(QtGui.QColor(255, 255, 255, 100))
+
+        if self.is_macos:
+            self.start, self.end = (
+                QtWidgets.QWidget.mapFromGlobal(self.start),
+                QtWidgets.QWidget.mapFromGlobal(self.end),
+            )
         painter.drawRect(QtCore.QRect(self.start, self.end))
         return super().paintEvent(event)
 
     def mousePressEvent(self, event):
-        self.start = self.end = event.pos()
+        self.start = self.end = (
+            event.pos() if not self.is_macos else QtGui.QCursor.pos()
+        )
         self.update()
         return super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
-        self.end = event.pos()
+        self.end = event.pos() if not self.is_macos else QtGui.QCursor.pos()
         self.update()
         return super().mousePressEvent(event)
 
@@ -66,6 +80,7 @@ class Snipper(QtWidgets.QWidget):
         y1, y2 = sorted((self.start.y(), self.end.y()))
 
         self.hide()
+        QtWidgets.QApplication.processEvents()
         shot = ImageGrab.grab(bbox=(x1, y1, x2, y2))
         processImage(shot)
         QtWidgets.QApplication.quit()
@@ -94,7 +109,14 @@ def notify(msg):
     try:
         Notification(title="TextShot", description=msg).send()
     except (SystemError, NameError):
-        pass
+        trayicon = QtWidgets.QSystemTrayIcon(
+            QtGui.QIcon(
+                QtGui.QPixmap.fromImage(QtGui.QImage(1, 1, QtGui.QImage.Format_Mono))
+            )
+        )
+        trayicon.show()
+        trayicon.showMessage("TextShot", msg, QtWidgets.QSystemTrayIcon.NoIcon)
+        trayicon.hide()
 
 
 if __name__ == "__main__":
