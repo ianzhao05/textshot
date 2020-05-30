@@ -61,14 +61,12 @@ class Snipper(QtWidgets.QWidget):
         return super().paintEvent(event)
 
     def mousePressEvent(self, event):
-        self.start = self.end = (
-            event.pos() if not self.is_macos else QtGui.QCursor.pos()
-        )
+        self.start = self.end = QtGui.QCursor.pos()
         self.update()
         return super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
-        self.end = event.pos() if not self.is_macos else QtGui.QCursor.pos()
+        self.end = QtGui.QCursor.pos()
         self.update()
         return super().mousePressEvent(event)
 
@@ -132,9 +130,6 @@ if __name__ == "__main__":
             "Have you installed it and added the install directory to your system path?"
         )
         sys.exit()
-
-    if os.name == "nt":
-        ctypes.windll.user32.SetProcessDPIAware()
 
     app = QtWidgets.QApplication(sys.argv)
     window = QtWidgets.QMainWindow()
