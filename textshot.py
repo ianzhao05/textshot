@@ -76,8 +76,10 @@ class Snipper(QtWidgets.QWidget):
         if self.start == self.end:
             return super().mouseReleaseEvent(event)
 
-        x1, x2 = sorted((self.start.x(), self.end.x()))
-        y1, y2 = sorted((self.start.y(), self.end.y()))
+        # get correct postions by multipying the scale factor
+        scale_factor = float(os.environ['GDK_SCALE'])
+        x1, x2 = sorted((int(self.start.x() * scale_factor), int(self.end.x() * scale_factor)))
+        y1, y2 = sorted((int(self.start.y() * scale_factor), int(self.end.y() * scale_factor)))
 
         self.hide()
         QtWidgets.QApplication.processEvents()
@@ -97,9 +99,21 @@ def processImage(img):
         return
 
     if result:
-        pyperclip.copy(result)
-        print(f'INFO: Copied "{result}" to the clipboard')
-        notify(f'Copied "{result}" to the clipboard')
+        # trim space between Chinese characters
+        print(result)
+        refined_result = []
+        for i, c in enumerate(result):
+            if i == 0 or i == len(result) - 1:
+                refined_result.append(c)
+                continue
+            if c == ' ' and (not result[i-1].isascii()) and (not result[i+1].isascii()):
+                continue
+            refined_result.append(c)
+        refined_result = ''.join(refined_result).strip()
+
+        pyperclip.copy(refined_result)
+        print(f'INFO: Copied "{refined_result}" to the clipboard')
+        notify(f'Copied "{refined_result}" to the clipboard')
     else:
         print(f"INFO: Unable to read text from image, did not copy")
         notify(f"Unable to read text from image, did not copy")
