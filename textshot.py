@@ -53,11 +53,11 @@ class Snipper(QtWidgets.QWidget):
         painter.setBrush(QtGui.QColor(255, 255, 255, 100))
 
         if self.is_macos:
-            self.start, self.end = (
-                QtWidgets.QWidget.mapFromGlobal(self.start),
-                QtWidgets.QWidget.mapFromGlobal(self.end),
-            )
-        painter.drawRect(QtCore.QRect(self.start, self.end))
+            start, end = (self.mapFromGlobal(self.start), self.mapFromGlobal(self.end))
+        else:
+            start, end = self.start, self.end
+
+        painter.drawRect(QtCore.QRect(start, end))
         return super().paintEvent(event)
 
     def mousePressEvent(self, event):
