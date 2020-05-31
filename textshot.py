@@ -131,6 +131,7 @@ if __name__ == "__main__":
         )
         sys.exit()
 
+    QtCore.QCoreApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
     app = QtWidgets.QApplication(sys.argv)
     window = QtWidgets.QMainWindow()
     snipper = Snipper(window)
