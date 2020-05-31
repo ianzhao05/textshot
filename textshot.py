@@ -4,6 +4,7 @@ import ctypes
 import os
 import sys
 
+import platform
 import pyperclip
 import pyscreenshot as ImageGrab
 import pytesseract
@@ -61,14 +62,12 @@ class Snipper(QtWidgets.QWidget):
         return super().paintEvent(event)
 
     def mousePressEvent(self, event):
-        self.start = self.end = (
-            event.pos() if not self.is_macos else QtGui.QCursor.pos()
-        )
+        self.start = self.end = QtGui.QCursor.pos()
         self.update()
         return super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
-        self.end = event.pos() if not self.is_macos else QtGui.QCursor.pos()
+        self.end = QtGui.QCursor.pos()
         self.update()
         return super().mousePressEvent(event)
 
@@ -76,10 +75,20 @@ class Snipper(QtWidgets.QWidget):
         if self.start == self.end:
             return super().mouseReleaseEvent(event)
 
-        # get correct postions by multipying the scale factor
-        scale_factor = float(os.environ['GDK_SCALE'])
-        x1, x2 = sorted((int(self.start.x() * scale_factor), int(self.end.x() * scale_factor)))
-        y1, y2 = sorted((int(self.start.y() * scale_factor), int(self.end.y() * scale_factor)))
+        scaleFactor = 1.0
+        # Require further fix to work for multiple monitors with different scale factors
+        if platform.system() == "Linux":
+            if float(os.environ['QT_AUTO_SCREEN_SCALE_FACTOR']) == 0.0:
+                if "QT_SCALE_FACTOR" in os.environ:
+                    scaleFactor = float(os.environ['QT_SCALE_FACTOR'])
+                elif "QT_SCREEN_SCALE_FACTORS" in os.environ:
+                    qtScreenScaleFactors = {f.split('=')[0]:float(f.split('=')[1]) for f in os.environ['QT_SCREEN_SCALE_FACTORS'].split(';') if f}
+                    scaleFactor = qtScreenScaleFactors['DP1']
+            else:
+                scaleFactor = float(os.environ['QT_AUTO_SCREEN_SCALE_FACTOR'])
+
+        x1, x2 = sorted((int(self.start.x() * scaleFactor), int(self.end.x() * scaleFactor)))
+        y1, y2 = sorted((int(self.start.y() * scaleFactor), int(self.end.y() * scaleFactor)))
 
         self.hide()
         QtWidgets.QApplication.processEvents()
@@ -99,21 +108,9 @@ def processImage(img):
         return
 
     if result:
-        # trim space between Chinese characters
-        print(result)
-        refined_result = []
-        for i, c in enumerate(result):
-            if i == 0 or i == len(result) - 1:
-                refined_result.append(c)
-                continue
-            if c == ' ' and (not result[i-1].isascii()) and (not result[i+1].isascii()):
-                continue
-            refined_result.append(c)
-        refined_result = ''.join(refined_result).strip()
-
-        pyperclip.copy(refined_result)
-        print(f'INFO: Copied "{refined_result}" to the clipboard')
-        notify(f'Copied "{refined_result}" to the clipboard')
+        pyperclip.copy(result)
+        print(f'INFO: Copied "{result}" to the clipboard')
+        notify(f'Copied "{result}" to the clipboard')
     else:
         print(f"INFO: Unable to read text from image, did not copy")
         notify(f"Unable to read text from image, did not copy")
@@ -146,9 +143,6 @@ if __name__ == "__main__":
             "Have you installed it and added the install directory to your system path?"
         )
         sys.exit()
-
-    if os.name == "nt":
-        ctypes.windll.user32.SetProcessDPIAware()
 
     app = QtWidgets.QApplication(sys.argv)
     window = QtWidgets.QMainWindow()
