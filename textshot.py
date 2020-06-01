@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 
 import ctypes
+import io
 import os
 import sys
+import time
 
 import pyperclip
 import pyscreenshot as ImageGrab
 import pytesseract
+from PIL import Image
+from PIL.ImageQt import ImageQt
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 
@@ -30,9 +34,15 @@ class Snipper(QtWidgets.QWidget):
             self.setWindowState(self.windowState() | Qt.WindowMaximized)
         else:
             self.setWindowState(self.windowState() | Qt.WindowFullScreen)
+            start = time.time()
+            self.screen = ImageQt(ImageGrab.grab(childprocess=False))
+            print(time.time() - start)
+            palette = QtGui.QPalette()
+            palette.setBrush(self.backgroundRole(), QtGui.QBrush(self.screen))
+            self.setPalette(palette)
 
-        self.setStyleSheet("background-color: black")
-        self.setWindowOpacity(0.5)
+        # self.setStyleSheet("background-color: black")
+        # self.setWindowOpacity(0.5)
 
         QtWidgets.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
 
@@ -45,18 +55,21 @@ class Snipper(QtWidgets.QWidget):
         return super().keyPressEvent(event)
 
     def paintEvent(self, event):
+        painter = QtGui.QPainter(self)
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(QtGui.QColor(0, 0, 0, 100))
+        painter.drawRect(0, 0, self.width(), self.height())
+
         if self.start == self.end:
             return super().paintEvent(event)
-
-        painter = QtGui.QPainter(self)
-        painter.setPen(QtGui.QPen(QtGui.QColor(255, 255, 255), 3))
-        painter.setBrush(QtGui.QColor(255, 255, 255, 100))
 
         if self.is_macos:
             start, end = (self.mapFromGlobal(self.start), self.mapFromGlobal(self.end))
         else:
             start, end = self.start, self.end
 
+        painter.setPen(QtGui.QPen(QtGui.QColor(255, 255, 255), 3))
+        painter.setBrush(QtGui.QColor(255, 255, 255, 100))
         painter.drawRect(QtCore.QRect(start, end))
         return super().paintEvent(event)
 
@@ -74,20 +87,23 @@ class Snipper(QtWidgets.QWidget):
         if self.start == self.end:
             return super().mouseReleaseEvent(event)
 
-        x1, x2 = sorted((self.start.x(), self.end.x()))
-        y1, y2 = sorted((self.start.y(), self.end.y()))
-
         self.hide()
         QtWidgets.QApplication.processEvents()
-        shot = ImageGrab.grab(bbox=(x1, y1, x2, y2))
+        shot = self.screen.copy(QtCore.QRect(self.start, self.end))
         processImage(shot)
         QtWidgets.QApplication.quit()
 
 
 def processImage(img):
+    buffer = QtCore.QBuffer()
+    buffer.open(QtCore.QBuffer.ReadWrite)
+    img.save(buffer, "PNG")
+    pil_img = Image.open(io.BytesIO(buffer.data()))
+    buffer.close()
+
     try:
         result = pytesseract.image_to_string(
-            img, timeout=2, lang=(sys.argv[1] if len(sys.argv) > 1 else None)
+            pil_img, timeout=2, lang=(sys.argv[1] if len(sys.argv) > 1 else None)
         )
     except RuntimeError as error:
         print(f"ERROR: An error occurred when trying to process the image: {error}")
