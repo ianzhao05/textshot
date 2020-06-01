@@ -25,20 +25,14 @@ class Snipper(QtWidgets.QWidget):
             Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Dialog
         )
 
-        self.is_macos = sys.platform.startswith("darwin")
-        if self.is_macos:
-            self.setWindowState(self.windowState() | Qt.WindowMaximized)
-            self.setStyleSheet("background-color: black")
-            self.setWindowOpacity(0.5)
-        else:
-            self.setWindowState(self.windowState() | Qt.WindowFullScreen)
-            self.screen = QtGui.QScreen.grabWindow(
-                QtWidgets.QApplication.primaryScreen(),
-                QtWidgets.QApplication.desktop().winId(),
-            )
-            palette = QtGui.QPalette()
-            palette.setBrush(self.backgroundRole(), QtGui.QBrush(self.screen))
-            self.setPalette(palette)
+        self.setWindowState(self.windowState() | Qt.WindowFullScreen)
+        self.screen = QtGui.QScreen.grabWindow(
+            QtWidgets.QApplication.primaryScreen(),
+            QtWidgets.QApplication.desktop().winId(),
+        )
+        palette = QtGui.QPalette()
+        palette.setBrush(self.backgroundRole(), QtGui.QBrush(self.screen))
+        self.setPalette(palette)
 
         QtWidgets.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
 
@@ -59,14 +53,9 @@ class Snipper(QtWidgets.QWidget):
         if self.start == self.end:
             return super().paintEvent(event)
 
-        if self.is_macos:
-            start, end = (self.mapFromGlobal(self.start), self.mapFromGlobal(self.end))
-        else:
-            start, end = self.start, self.end
-
         painter.setPen(QtGui.QPen(QtGui.QColor(255, 255, 255), 3))
         painter.setBrush(QtGui.QColor(255, 255, 255, 100))
-        painter.drawRect(QtCore.QRect(start, end))
+        painter.drawRect(QtCore.QRect(self.start, self.end))
         return super().paintEvent(event)
 
     def mousePressEvent(self, event):
