@@ -29,3 +29,5 @@ On **Ubuntu**, open the Keyboard Settings, which shows you all the Gnome shortcu
 - (Optional) Create a virtual environment, for example with `python -m venv .venv`
 - Install the required packages with `pip install -r requirements.txt`
 - Install [Google's Tesseract OCR Engine](https://github.com/tesseract-ocr/tesseract), and ensure that `tesseract` can be reached from the command line by adding the directory to your system path.
+
+@rigred has added this to the AUR, so Arch Linux users can install the package `textshot-git` with their AUR helper. For example, `yay -S textshot-git`.
