@@ -4,7 +4,6 @@ import ctypes
 import io
 import os
 import sys
-import time
 
 import pyperclip
 import pyscreenshot as ImageGrab
@@ -36,9 +35,7 @@ class Snipper(QtWidgets.QWidget):
             self.setWindowOpacity(0.5)
         else:
             self.setWindowState(self.windowState() | Qt.WindowFullScreen)
-            start = time.time()
             self.screen = ImageQt(ImageGrab.grab(childprocess=False))
-            print(time.time() - start)
             palette = QtGui.QPalette()
             palette.setBrush(self.backgroundRole(), QtGui.QBrush(self.screen))
             self.setPalette(palette)
