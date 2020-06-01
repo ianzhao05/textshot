@@ -32,6 +32,8 @@ class Snipper(QtWidgets.QWidget):
         self.is_macos = sys.platform.startswith("darwin")
         if self.is_macos:
             self.setWindowState(self.windowState() | Qt.WindowMaximized)
+            self.setStyleSheet("background-color: black")
+            self.setWindowOpacity(0.5)
         else:
             self.setWindowState(self.windowState() | Qt.WindowFullScreen)
             start = time.time()
@@ -40,9 +42,6 @@ class Snipper(QtWidgets.QWidget):
             palette = QtGui.QPalette()
             palette.setBrush(self.backgroundRole(), QtGui.QBrush(self.screen))
             self.setPalette(palette)
-
-        # self.setStyleSheet("background-color: black")
-        # self.setWindowOpacity(0.5)
 
         QtWidgets.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
 
