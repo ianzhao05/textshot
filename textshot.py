@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
 
-import ctypes
 import io
 import os
 import sys
 
 import pyperclip
-import pyscreenshot as ImageGrab
 import pytesseract
 from PIL import Image
-from PIL.ImageQt import ImageQt
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 
@@ -35,7 +32,10 @@ class Snipper(QtWidgets.QWidget):
             self.setWindowOpacity(0.5)
         else:
             self.setWindowState(self.windowState() | Qt.WindowFullScreen)
-            self.screen = ImageQt(ImageGrab.grab(childprocess=False))
+            self.screen = QtGui.QScreen.grabWindow(
+                QtWidgets.QApplication.primaryScreen(),
+                QtWidgets.QApplication.desktop().winId(),
+            )
             palette = QtGui.QPalette()
             palette.setBrush(self.backgroundRole(), QtGui.QBrush(self.screen))
             self.setPalette(palette)
