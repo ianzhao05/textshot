@@ -54,7 +54,7 @@ class Snipper(QtWidgets.QWidget):
             return super().paintEvent(event)
 
         painter.setPen(QtGui.QPen(QtGui.QColor(255, 255, 255), 3))
-        painter.setBrush(QtGui.QColor(255, 255, 255, 100))
+        painter.setBrush(painter.background())
         painter.drawRect(QtCore.QRect(self.start, self.end))
         return super().paintEvent(event)
 
