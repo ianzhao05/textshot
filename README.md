@@ -9,7 +9,7 @@
 
 This tool gives users the ability to take a screenshot and copy to the clipboard the text content of the screenshot. Works on Windows, macOS, Ubuntu, Manjaro, and (should work on) most other Linux distros.
 
-![TextShot Demo](https://i.imgur.com/BSMCh3r.gif)
+![TextShot Demo](https://i.imgur.com/Z0Ng13S.gif)
 
 ## Use
 
