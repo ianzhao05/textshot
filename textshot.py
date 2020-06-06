@@ -24,12 +24,9 @@ class Snipper(QtWidgets.QWidget):
         self.setWindowFlags(
             Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Dialog
         )
-
         self.setWindowState(self.windowState() | Qt.WindowFullScreen)
-        self.screen = QtGui.QScreen.grabWindow(
-            QtWidgets.QApplication.primaryScreen(),
-            QtWidgets.QApplication.desktop().winId(),
-        )
+
+        self.screen = QtWidgets.QApplication.screenAt(QtGui.QCursor.pos()).grabWindow(0)
         palette = QtGui.QPalette()
         palette.setBrush(self.backgroundRole(), QtGui.QBrush(self.screen))
         self.setPalette(palette)
@@ -59,12 +56,12 @@ class Snipper(QtWidgets.QWidget):
         return super().paintEvent(event)
 
     def mousePressEvent(self, event):
-        self.start = self.end = QtGui.QCursor.pos()
+        self.start = self.end = event.pos()
         self.update()
         return super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
-        self.end = QtGui.QCursor.pos()
+        self.end = event.pos()
         self.update()
         return super().mousePressEvent(event)
 
