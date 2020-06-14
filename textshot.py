@@ -26,9 +26,11 @@ class Snipper(QtWidgets.QWidget):
         )
         self.setWindowState(self.windowState() | Qt.WindowFullScreen)
 
-        self.screen = QtWidgets.QApplication.screenAt(QtGui.QCursor.pos()).grabWindow(0)
+        screen = QtWidgets.QApplication.screenAt(QtGui.QCursor.pos())
+        self.setGeometry(screen.geometry())
+        self.screenshot = screen.grabWindow(0)
         palette = QtGui.QPalette()
-        palette.setBrush(self.backgroundRole(), QtGui.QBrush(self.screen))
+        palette.setBrush(self.backgroundRole(), QtGui.QBrush(self.screenshot))
         self.setPalette(palette)
 
         QtWidgets.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
@@ -71,7 +73,7 @@ class Snipper(QtWidgets.QWidget):
 
         self.hide()
         QtWidgets.QApplication.processEvents()
-        shot = self.screen.copy(QtCore.QRect(self.start, self.end))
+        shot = self.screenshot.copy(QtCore.QRect(self.start, self.end))
         processImage(shot)
         QtWidgets.QApplication.quit()
 
