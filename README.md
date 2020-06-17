@@ -7,7 +7,7 @@
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 </div>
 
-This tool gives users the ability to take a screenshot and copy to the clipboard the text content of the screenshot. Works on Windows, macOS, Ubuntu, Manjaro, and (should work on) most other Linux distros.
+This tool gives users the ability to take a screenshot and copy to the clipboard the text content of the screenshot. Works on Windows, macOS, and most Linux distros (some desktop environments may have issues with transparency).
 
 ![TextShot Demo](https://i.imgur.com/Z0Ng13S.gif)
 
