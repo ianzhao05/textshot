@@ -58,6 +58,7 @@ class Snipper(QtWidgets.QWidget):
     def mousePressEvent(self, event):
         self.start = self.end = event.pos()
         self.update()
+        self.screenShot = self.screen.copy(QtCore.QRect(QtCore.QPoint(0, 0), QtCore.QSize(-1, -1)))
         return super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
@@ -71,21 +72,20 @@ class Snipper(QtWidgets.QWidget):
 
         self.hide()
         QtWidgets.QApplication.processEvents()
-        shot = self.screen.copy(QtCore.QRect(self.start, self.end))
-        processImage(shot)
+        self.resizedImage = self.screenShot.scaled(screenWidth, screenHeight)
+        self.resizedImage.save('capture.png')
+        self.resizedImage = Image.open('./capture.png')
+        selectedArea = self.resizedImage.crop((self.start.x(), self.start.y(), self.end.x(), self.end.y()))
+        selectedArea.save('capture.png')
+        processImage(selectedArea)
         QtWidgets.QApplication.quit()
 
 
 def processImage(img):
-    buffer = QtCore.QBuffer()
-    buffer.open(QtCore.QBuffer.ReadWrite)
-    img.save(buffer, "PNG")
-    pil_img = Image.open(io.BytesIO(buffer.data()))
-    buffer.close()
 
     try:
         result = pytesseract.image_to_string(
-            pil_img, timeout=5, lang=(sys.argv[1] if len(sys.argv) > 1 else None)
+            img, timeout=5, lang=(sys.argv[1] if len(sys.argv) > 1 else None)
         )
     except RuntimeError as error:
         print(f"ERROR: An error occurred when trying to process the image: {error}")
@@ -99,6 +99,8 @@ def processImage(img):
     else:
         print(f"INFO: Unable to read text from image, did not copy")
         notify(f"Unable to read text from image, did not copy")
+    
+    os.remove('capture.png')
 
 
 def notify(msg):
@@ -129,8 +131,9 @@ if __name__ == "__main__":
         )
         sys.exit()
 
-    QtCore.QCoreApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
     app = QtWidgets.QApplication(sys.argv)
+    screenWidth = app.primaryScreen().size().width()
+    screenHeight = app.primaryScreen().size().height()
     window = QtWidgets.QMainWindow()
     snipper = Snipper(window)
     snipper.show()
