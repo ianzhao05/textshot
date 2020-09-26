@@ -20,16 +20,18 @@ An optional command line argument can specify the language. For example, `python
 It is recommended to attach a global hotkey to this tool.
 
 On **Windows**, one can accomplish this by using an [AutoHotkey](https://www.autohotkey.com/) script; `textshot.ahk` contains a sample AHK script that can be used.  
-On **Ubuntu**, open the Keyboard Settings, which shows you all the Gnome shortcuts. At the bottom there is a `+` button to add your own shortcuts. Click it and set the command to `/usr/bin/python3 <path-to-textshot.py>`. In case you are using a venv, the python3 path above should point to the venv's python3 instead of the global python3.
+On **Ubuntu**, open the Keyboard Settings, which shows you all the Gnome shortcuts. At the bottom there is a `+` button to add your own shortcuts. Click it and set the command to `/usr/bin/python3 <path-to-textshot.py>`. In case you are using a virtual environment, the `python3` path above should point to the environment's `python3` instead of the global python3.  
+The process on other operating systems can be found by searching how to run a shell command with a keyboard shortcut.
 
 ## Installation
 
 - Install [Python 3](https://www.python.org/downloads/)
 - Clone this repository, and `cd` into it
-- (Optional) Create a virtual environment, for example with `python -m venv .venv`
+- (Optional) Create a virtual environment, for example with `python -m venv .venv`, and activate it
 - Install the required packages with `pip install -r requirements.txt`
 - Install [Google's Tesseract OCR Engine](https://github.com/tesseract-ocr/tesseract), and ensure that `tesseract` can be reached from the command line by adding the directory to your system path.
+- `python textshot.py`
 
 Linux users: If the text shows up correctly in the notification, but you cannot paste it, install `xclip` (e.g. with `sudo apt install xclip`).
 
-@rigred has added this to the AUR, so Arch Linux users can install the package `textshot-git` with their AUR helper. For example, `yay -S textshot-git`.
+@rigred has added this to the AUR, so Arch Linux users can install the package `textshot-git` with their AUR helper. For example, `yay -S textshot-git`. This may not be up to date, so if you encounter issues, use the normal installation method above.
