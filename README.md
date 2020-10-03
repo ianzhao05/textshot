@@ -13,20 +13,21 @@ This tool gives users the ability to take a screenshot and copy to the clipboard
 
 ## Use
 
-Running `textshot.py` will open an overlay over the screen, where a rectangle can be drawn over the portion of the screen containing the text the user wishes to copy.
+Running `textshot.py` with `python`/`python3` will open an overlay over the screen, where a rectangle can be drawn over the portion of the screen containing the text the user wishes to copy.
 
 An optional command line argument can specify the language. For example, `python textshot.py eng+fra` will use English as the primary language and French as the secondary language. The default is `eng` (English). Make sure that the appropriate data files for Tesseract are installed for other languages. A list of all supported languages can be found [here](https://github.com/tesseract-ocr/tesseract/blob/master/doc/tesseract.1.asc#languages-and-scripts).
 
-It is recommended to attach a global hotkey to this tool.
+It is recommended to attach a global hotkey to this tool so you can run it without opening a console and typing in the command.
 
 On **Windows**, one can accomplish this by using an [AutoHotkey](https://www.autohotkey.com/) script; `textshot.ahk` contains a sample AHK script that can be used.  
-On **Ubuntu**, open the Keyboard Settings, which shows you all the Gnome shortcuts. At the bottom there is a `+` button to add your own shortcuts. Click it and set the command to `/usr/bin/python3 <path-to-textshot.py>`. In case you are using a virtual environment, the `python3` path above should point to the environment's `python3` instead of the global python3.  
+On **Ubuntu**, open the Keyboard Settings, which shows you all the Gnome shortcuts. At the bottom there is a `+` button to add your own shortcuts. Click it and set the command to `/usr/bin/python3 <path-to-textshot.py>`. In case you are using a virtual environment, the `python3` path above should point to the environment's `python3` instead of the global `python3`.  
 The process on other operating systems can be found by searching how to run a shell command with a keyboard shortcut.
 
 ## Installation
 
 - Install [Python 3](https://www.python.org/downloads/)
-- Clone this repository, and `cd` into it
+- Clone this repository... `git clone https://github.com/ianzhao05/textshot.git`
+- ...and `cd` into it `cd textshot`
 - (Optional) Create a virtual environment, for example with `python -m venv .venv`, and activate it
 - Install the required packages with `pip install -r requirements.txt`
 - Install [Google's Tesseract OCR Engine](https://github.com/tesseract-ocr/tesseract), and ensure that `tesseract` can be reached from the command line by adding the directory to your system path.
