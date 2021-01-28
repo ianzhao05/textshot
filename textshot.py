@@ -116,6 +116,8 @@ def notify(msg):
 
 
 if __name__ == "__main__":
+    QtCore.QCoreApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
+    app = QtWidgets.QApplication(sys.argv)
     try:
         pytesseract.get_tesseract_version()
     except EnvironmentError:
@@ -129,8 +131,6 @@ if __name__ == "__main__":
         )
         sys.exit()
 
-    QtCore.QCoreApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
-    app = QtWidgets.QApplication(sys.argv)
     window = QtWidgets.QMainWindow()
     snipper = Snipper(window)
     snipper.show()
