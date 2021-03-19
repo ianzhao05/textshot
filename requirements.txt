@@ -2,6 +2,6 @@ Pillow==8.1.2
 pyperclip==1.8.2
 PyQt5==5.15.4
 PyQt5-sip==12.8.1
-pytesseract==0.3.7
+pytesseract==0.3.4
 py-notifier==0.1.1
 win10toast==0.9; platform_system == "Windows"
