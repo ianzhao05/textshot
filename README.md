@@ -1,4 +1,4 @@
-<h1 align="center">TextShot</h2>
+<h1 align="center">TextShot</h1>
 
 <div align="center">
 <a href="https://github.com/ianzhao05/textshot/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/ianzhao05/textshot"></a>
