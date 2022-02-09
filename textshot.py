@@ -70,7 +70,12 @@ class Snipper(QtWidgets.QWidget):
 
         self.hide()
         QtWidgets.QApplication.processEvents()
-        shot = self.screen.copy(QtCore.QRect(self.start, self.end))
+        shot = self.screen.copy(
+            min(self.start.x(), self.end.x()),
+            min(self.start.y(), self.end.y()),
+            abs(self.start.x() - self.end.x()),
+            abs(self.start.y() - self.end.y()),
+        )
         processImage(shot)
         QtWidgets.QApplication.quit()
 
