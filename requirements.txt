@@ -1,6 +1,6 @@
 Pillow==9.1.1
-PyQt5==5.15.6
-PyQt5-sip==12.10.1
+PyQt5==5.15.7
+PyQt5-sip==12.11.0
 PyQt5-stubs==5.15.6.0
 py-notifier==0.3.2
 pyperclip==1.8.2
