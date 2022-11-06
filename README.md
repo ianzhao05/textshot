@@ -13,9 +13,29 @@ This tool gives users the ability to take a screenshot and copy to the clipboard
 
 ## Use
 
-Running `textshot.py` with `python`/`python3` will open an overlay over the screen, where a rectangle can be drawn over the portion of the screen containing the text the user wishes to copy.
+`textshot.py -h` prints the available command line options:
 
-An optional command line argument can specify the language. For example, `python textshot.py eng+fra` will use English as the primary language and French as the secondary language. The default is `eng` (English). Make sure that the appropriate data files for Tesseract are installed for other languages. A list of all supported languages can be found [here](https://github.com/tesseract-ocr/tesseract/blob/master/doc/tesseract.1.asc#languages-and-scripts).
+    usage: textshot.py [-h] [-i INTERVAL] [langs]
+
+    Take a screenshot and copy its text content to the clipboard.
+
+    positional arguments:
+    langs                 languages passed to tesseract, eg. "eng+fra" (default: eng)
+
+    optional arguments:
+    -h, --help            show this help message and exit
+    -i INTERVAL, --interval INTERVAL
+                            select a screen region then take textshots every INTERVAL milliseconds
+
+### Examples
+
+- Basic usage: `python textshot.py` opens an overlay where a rectangle can be drawn around the text to be copied.
+
+- Alternate languages: `python textshot.py eng+fra` specifies use of English as the primary language and French as the secondary language. Make sure that the appropriate data files for Tesseract are installed for other languages. A list of all supported languages can be found [here](https://github.com/tesseract-ocr/tesseract/blob/master/doc/tesseract.1.asc#languages-and-scripts).
+
+- Continuously copy text content: `python textshot.py --interval 200` draw a rectangle at a screen region then copy text from it every 200ms.
+
+### Hotkeys
 
 It is recommended to attach a global hotkey to this tool so you can run it without opening a console and typing in the command.
 
