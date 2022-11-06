@@ -25,12 +25,14 @@ class Snipper(QtWidgets.QWidget):
         )
         self.setWindowState(self.windowState() | Qt.WindowFullScreen)
 
-        self.screen = QtWidgets.QApplication.screenAt(QtGui.QCursor.pos()).grabWindow(0)
+        self.screen = QtWidgets.QApplication.screenAt(
+            QtGui.QCursor.pos()).grabWindow(0)
         palette = QtGui.QPalette()
         palette.setBrush(self.backgroundRole(), QtGui.QBrush(self.screen))
         self.setPalette(palette)
 
-        QtWidgets.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
+        QtWidgets.QApplication.setOverrideCursor(
+            QtGui.QCursor(QtCore.Qt.CrossCursor))
 
         self.start, self.end = QtCore.QPoint(), QtCore.QPoint()
 
@@ -92,7 +94,8 @@ def processImage(img):
             pil_img, timeout=5, lang=(sys.argv[1] if len(sys.argv) > 1 else None)
         ).strip()
     except RuntimeError as error:
-        print(f"ERROR: An error occurred when trying to process the image: {error}")
+        print(
+            f"ERROR: An error occurred when trying to process the image: {error}")
         notify(f"An error occurred when trying to process the image: {error}")
         return
 
@@ -111,7 +114,8 @@ def notify(msg):
     except (SystemError, NameError):
         trayicon = QtWidgets.QSystemTrayIcon(
             QtGui.QIcon(
-                QtGui.QPixmap.fromImage(QtGui.QImage(1, 1, QtGui.QImage.Format_Mono))
+                QtGui.QPixmap.fromImage(QtGui.QImage(
+                    1, 1, QtGui.QImage.Format_Mono))
             )
         )
         trayicon.show()
