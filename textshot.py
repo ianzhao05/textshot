@@ -7,7 +7,8 @@ import pyperclip
 import pytesseract
 from PIL import Image
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
+
 
 try:
     from pynotifier import Notification
@@ -25,16 +26,20 @@ class Snipper(QtWidgets.QWidget):
         )
         self.setWindowState(self.windowState() | Qt.WindowFullScreen)
 
-        self.screen = QtWidgets.QApplication.screenAt(
-            QtGui.QCursor.pos()).grabWindow(0)
+        self._screen = QtWidgets.QApplication.screenAt(QtGui.QCursor.pos())
+
         palette = QtGui.QPalette()
-        palette.setBrush(self.backgroundRole(), QtGui.QBrush(self.screen))
+        palette.setBrush(self.backgroundRole(),
+                         QtGui.QBrush(self.getWindow()))
         self.setPalette(palette)
 
         QtWidgets.QApplication.setOverrideCursor(
             QtGui.QCursor(QtCore.Qt.CrossCursor))
 
         self.start, self.end = QtCore.QPoint(), QtCore.QPoint()
+
+    def getWindow(self):
+        return self._screen.grabWindow(0)
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
@@ -66,18 +71,12 @@ class Snipper(QtWidgets.QWidget):
         self.update()
         return super().mousePressEvent(event)
 
-    def mouseReleaseEvent(self, event):
-        if self.start == self.end:
-            return super().mouseReleaseEvent(event)
-
-        self.shotOcrToClipboard()
-        QtWidgets.QApplication.quit()
-
-    def shotOcrToClipboard(self):
+    def snipOcr(self):
         self.hide()
+
         ocr_result = self.ocrOfDrawnRectangle()
         if ocr_result:
-            send_ocr_result_to_clipboard(ocr_result)
+            return ocr_result
         else:
             print(f"INFO: Unable to read text from image, did not copy")
             notify(f"Unable to read text from image, did not copy")
@@ -87,12 +86,62 @@ class Snipper(QtWidgets.QWidget):
         QtWidgets.QApplication.processEvents()
 
     def ocrOfDrawnRectangle(self):
-        return get_ocr_result(self.screen.copy(
+        return get_ocr_result(self.getWindow().copy(
             min(self.start.x(), self.end.x()),
             min(self.start.y(), self.end.y()),
             abs(self.start.x() - self.end.x()),
             abs(self.start.y() - self.end.y()),
         ))
+
+
+class OneTimeSnipper(Snipper):
+    """ Take an OCR screenshot once then end execution. """
+
+    def mouseReleaseEvent(self, event):
+        if self.start == self.end:
+            return super().mouseReleaseEvent(event)
+
+        ocr_result = self.snipOcr()
+        if ocr_result:
+            send_ocr_result_to_clipboard(ocr_result)
+            print_copied(ocr_result)
+            notify_copied(ocr_result)
+        QtWidgets.QApplication.quit()
+
+
+INTERVAL = 500
+
+
+class IntervalSnipper(Snipper):
+    """ 
+    Draw the screenshot rectangle once, then perform OCR there every `interval` 
+    ms.
+    """
+
+    prevOcrResult = None
+
+    def mouseReleaseEvent(self, event):
+        if self.start == self.end:
+            return super().mouseReleaseEvent(event)
+
+        self.startShotOcrInterval()
+
+    def startShotOcrInterval(self):
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.onShotOcrInterval)
+        self.timer.start(INTERVAL)
+
+    def onShotOcrInterval(self):
+        prev_ocr_result = self.prevOcrResult
+        ocr_result = self.snipOcr()
+
+        self.prevOcrResult = ocr_result
+
+        if not ocr_result or prev_ocr_result == ocr_result:
+            return
+        else:
+            send_ocr_result_to_clipboard(ocr_result)
+            print_copied(ocr_result)
 
 
 def get_ocr_result(img):
@@ -115,8 +164,14 @@ def get_ocr_result(img):
 
 def send_ocr_result_to_clipboard(result):
     pyperclip.copy(result)
-    print(f'INFO: Copied "{result}" to the clipboard')
-    notify(f'Copied "{result}" to the clipboard')
+
+
+def print_copied(copied):
+    print(f'INFO: Copied "{copied}" to the clipboard')
+
+
+def notify_copied(copied):
+    notify(f'Copied "{copied}" to the clipboard')
 
 
 def notify(msg):
@@ -151,6 +206,11 @@ if __name__ == "__main__":
         sys.exit()
 
     window = QtWidgets.QMainWindow()
-    snipper = Snipper(window)
-    snipper.show()
+    if len(sys.argv) == 3 and sys.argv[2].lower() == 'true':
+        snipper = IntervalSnipper(window)
+        snipper.show()
+    else:
+        snipper = OneTimeSnipper(window)
+        snipper.show()
+
     sys.exit(app.exec_())
