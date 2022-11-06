@@ -1,23 +1,17 @@
 #!/usr/bin/env python3
+""" Take a screenshot and copy its text content to the clipboard. """
 
-import io
 import sys
-
-import pyperclip
 import pytesseract
-from PIL import Image
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt, QTimer
-
-
-try:
-    from pynotifier import Notification
-except ImportError:
-    pass
+from util import (get_ocr_result, notify, notify_copied, print_copied,
+                  send_ocr_result_to_clipboard)
+import argparse
 
 
 class Snipper(QtWidgets.QWidget):
-    def __init__(self, parent=None, flags=Qt.WindowFlags()):
+    def __init__(self, parent, langs=None, flags=Qt.WindowFlags()):
         super().__init__(parent=parent, flags=flags)
 
         self.setWindowTitle("TextShot")
@@ -37,6 +31,7 @@ class Snipper(QtWidgets.QWidget):
             QtGui.QCursor(QtCore.Qt.CrossCursor))
 
         self.start, self.end = QtCore.QPoint(), QtCore.QPoint()
+        self.langs = langs
 
     def getWindow(self):
         return self._screen.grabWindow(0)
@@ -91,7 +86,7 @@ class Snipper(QtWidgets.QWidget):
             min(self.start.y(), self.end.y()),
             abs(self.start.x() - self.end.x()),
             abs(self.start.y() - self.end.y()),
-        ))
+        ), self.langs)
 
 
 class OneTimeSnipper(Snipper):
@@ -109,9 +104,6 @@ class OneTimeSnipper(Snipper):
         QtWidgets.QApplication.quit()
 
 
-INTERVAL = 500
-
-
 class IntervalSnipper(Snipper):
     """ 
     Draw the screenshot rectangle once, then perform OCR there every `interval` 
@@ -120,16 +112,28 @@ class IntervalSnipper(Snipper):
 
     prevOcrResult = None
 
+    def __init__(
+            self,
+            parent,
+            interval,
+            langs=None,
+            flags=Qt.WindowFlags()):
+        super().__init__(parent, langs, flags)
+        self.interval = interval
+
     def mouseReleaseEvent(self, event):
         if self.start == self.end:
             return super().mouseReleaseEvent(event)
 
+        # Take a shot as soon as the rectangle has been drawn
+        self.onShotOcrInterval()
+        # And then every `self.interval`ms
         self.startShotOcrInterval()
 
     def startShotOcrInterval(self):
         self.timer = QTimer()
         self.timer.timeout.connect(self.onShotOcrInterval)
-        self.timer.start(INTERVAL)
+        self.timer.start(self.interval)
 
     def onShotOcrInterval(self):
         prev_ocr_result = self.prevOcrResult
@@ -144,52 +148,15 @@ class IntervalSnipper(Snipper):
             print_copied(ocr_result)
 
 
-def get_ocr_result(img):
-    buffer = QtCore.QBuffer()
-    buffer.open(QtCore.QBuffer.ReadWrite)
-    img.save(buffer, "PNG")
-    pil_img = Image.open(io.BytesIO(buffer.data()))
-    buffer.close()
-
-    try:
-        return pytesseract.image_to_string(
-            pil_img, timeout=5, lang=(sys.argv[1] if len(sys.argv) > 1 else None)
-        ).strip()
-    except RuntimeError as error:
-        print(
-            f"ERROR: An error occurred when trying to process the image: {error}")
-        notify(f"An error occurred when trying to process the image: {error}")
-        return
+arg_parser = argparse.ArgumentParser(description=__doc__)
+arg_parser.add_argument('langs', nargs='?', default="eng",
+                        help='languages passed to tesseract, eg. "eng+fra" (default: %(default)s)')
+arg_parser.add_argument('-i', '--interval', type=int, default=None,
+                        help='select a screen region then take textshots every INTERVAL milliseconds')
 
 
-def send_ocr_result_to_clipboard(result):
-    pyperclip.copy(result)
+def take_textshot(langs, interval):
 
-
-def print_copied(copied):
-    print(f'INFO: Copied "{copied}" to the clipboard')
-
-
-def notify_copied(copied):
-    notify(f'Copied "{copied}" to the clipboard')
-
-
-def notify(msg):
-    try:
-        Notification(title="TextShot", description=msg).send()
-    except (SystemError, NameError):
-        trayicon = QtWidgets.QSystemTrayIcon(
-            QtGui.QIcon(
-                QtGui.QPixmap.fromImage(QtGui.QImage(
-                    1, 1, QtGui.QImage.Format_Mono))
-            )
-        )
-        trayicon.show()
-        trayicon.showMessage("TextShot", msg, QtWidgets.QSystemTrayIcon.NoIcon)
-        trayicon.hide()
-
-
-if __name__ == "__main__":
     QtCore.QCoreApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
     app = QtWidgets.QApplication(sys.argv)
     try:
@@ -206,11 +173,16 @@ if __name__ == "__main__":
         sys.exit()
 
     window = QtWidgets.QMainWindow()
-    if len(sys.argv) == 3 and sys.argv[2].lower() == 'true':
-        snipper = IntervalSnipper(window)
+    if interval != None:
+        snipper = IntervalSnipper(window, interval, langs)
         snipper.show()
     else:
-        snipper = OneTimeSnipper(window)
+        snipper = OneTimeSnipper(window, langs)
         snipper.show()
 
     sys.exit(app.exec_())
+
+
+if __name__ == "__main__":
+    args = arg_parser.parse_args()
+    take_textshot(args.langs, args.interval)
