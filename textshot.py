@@ -70,19 +70,32 @@ class Snipper(QtWidgets.QWidget):
         if self.start == self.end:
             return super().mouseReleaseEvent(event)
 
+        self.shotOcrToClipboard()
+        QtWidgets.QApplication.quit()
+
+    def shotOcrToClipboard(self):
         self.hide()
+        ocr_result = self.ocrOfDrawnRectangle()
+        if ocr_result:
+            send_ocr_result_to_clipboard(ocr_result)
+        else:
+            print(f"INFO: Unable to read text from image, did not copy")
+            notify(f"Unable to read text from image, did not copy")
+
+    def hide(self):
+        super().hide()
         QtWidgets.QApplication.processEvents()
-        shot = self.screen.copy(
+
+    def ocrOfDrawnRectangle(self):
+        return get_ocr_result(self.screen.copy(
             min(self.start.x(), self.end.x()),
             min(self.start.y(), self.end.y()),
             abs(self.start.x() - self.end.x()),
             abs(self.start.y() - self.end.y()),
-        )
-        processImage(shot)
-        QtWidgets.QApplication.quit()
+        ))
 
 
-def processImage(img):
+def get_ocr_result(img):
     buffer = QtCore.QBuffer()
     buffer.open(QtCore.QBuffer.ReadWrite)
     img.save(buffer, "PNG")
@@ -90,7 +103,7 @@ def processImage(img):
     buffer.close()
 
     try:
-        result = pytesseract.image_to_string(
+        return pytesseract.image_to_string(
             pil_img, timeout=5, lang=(sys.argv[1] if len(sys.argv) > 1 else None)
         ).strip()
     except RuntimeError as error:
@@ -99,13 +112,11 @@ def processImage(img):
         notify(f"An error occurred when trying to process the image: {error}")
         return
 
-    if result:
-        pyperclip.copy(result)
-        print(f'INFO: Copied "{result}" to the clipboard')
-        notify(f'Copied "{result}" to the clipboard')
-    else:
-        print(f"INFO: Unable to read text from image, did not copy")
-        notify(f"Unable to read text from image, did not copy")
+
+def send_ocr_result_to_clipboard(result):
+    pyperclip.copy(result)
+    print(f'INFO: Copied "{result}" to the clipboard')
+    notify(f'Copied "{result}" to the clipboard')
 
 
 def notify(msg):
