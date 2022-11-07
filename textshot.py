@@ -2,12 +2,13 @@
 """ Take a screenshot and copy its text content to the clipboard. """
 
 import sys
-import pytesseract
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt, QTimer
-from util import (get_ocr_result, notify, notify_copied, print_copied,
-                  send_ocr_result_to_clipboard)
+from ocr import ensure_tesseract_installed, get_ocr_result
+from logger import log_ocr_failure, log_copied
+from notifications import notify_copied, notify_ocr_failure
 import argparse
+import pyperclip
 
 
 class Snipper(QtWidgets.QWidget):
@@ -73,8 +74,7 @@ class Snipper(QtWidgets.QWidget):
         if ocr_result:
             return ocr_result
         else:
-            print(f"INFO: Unable to read text from image, did not copy")
-            notify(f"Unable to read text from image, did not copy")
+            log_ocr_failure()
 
     def hide(self):
         super().hide()
@@ -98,9 +98,12 @@ class OneTimeSnipper(Snipper):
 
         ocr_result = self.snipOcr()
         if ocr_result:
-            send_ocr_result_to_clipboard(ocr_result)
-            print_copied(ocr_result)
+            pyperclip.copy(ocr_result)
+            log_copied(ocr_result)
             notify_copied(ocr_result)
+        else:
+            notify_ocr_failure()
+
         QtWidgets.QApplication.quit()
 
 
@@ -139,13 +142,16 @@ class IntervalSnipper(Snipper):
         prev_ocr_result = self.prevOcrResult
         ocr_result = self.snipOcr()
 
-        self.prevOcrResult = ocr_result
+        if not ocr_result:
+            log_ocr_failure()
+            return
 
-        if not ocr_result or prev_ocr_result == ocr_result:
+        self.prevOcrResult = ocr_result
+        if prev_ocr_result == ocr_result:
             return
         else:
-            send_ocr_result_to_clipboard(ocr_result)
-            print_copied(ocr_result)
+            pyperclip.copy(ocr_result)
+            log_copied(ocr_result)
 
 
 arg_parser = argparse.ArgumentParser(description=__doc__)
@@ -156,21 +162,10 @@ arg_parser.add_argument('-i', '--interval', type=int, default=None,
 
 
 def take_textshot(langs, interval):
+    ensure_tesseract_installed()
 
     QtCore.QCoreApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
     app = QtWidgets.QApplication(sys.argv)
-    try:
-        pytesseract.get_tesseract_version()
-    except EnvironmentError:
-        notify(
-            "Tesseract is either not installed or cannot be reached.\n"
-            "Have you installed it and added the install directory to your system path?"
-        )
-        print(
-            "ERROR: Tesseract is either not installed or cannot be reached.\n"
-            "Have you installed it and added the install directory to your system path?"
-        )
-        sys.exit()
 
     window = QtWidgets.QMainWindow()
     if interval != None:
