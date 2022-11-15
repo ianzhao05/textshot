@@ -1,4 +1,4 @@
-Pillow==9.2.0
+Pillow==9.3.0
 PyQt5==5.15.7
 PyQt5-sip==12.11.0
 PyQt5-stubs==5.15.6.0
