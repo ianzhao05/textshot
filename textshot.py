@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """ Take a screenshot and copy its text content to the clipboard. """
 
+import argparse
 import sys
+
+import pyperclip
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt, QTimer
-from ocr import ensure_tesseract_installed, get_ocr_result
-from logger import log_ocr_failure, log_copied
+
+from logger import log_copied, log_ocr_failure
 from notifications import notify_copied, notify_ocr_failure
-import argparse
-import pyperclip
+from ocr import ensure_tesseract_installed, get_ocr_result
 
 
 class Snipper(QtWidgets.QWidget):
@@ -24,12 +26,10 @@ class Snipper(QtWidgets.QWidget):
         self._screen = QtWidgets.QApplication.screenAt(QtGui.QCursor.pos())
 
         palette = QtGui.QPalette()
-        palette.setBrush(self.backgroundRole(),
-                         QtGui.QBrush(self.getWindow()))
+        palette.setBrush(self.backgroundRole(), QtGui.QBrush(self.getWindow()))
         self.setPalette(palette)
 
-        QtWidgets.QApplication.setOverrideCursor(
-            QtGui.QCursor(QtCore.Qt.CrossCursor))
+        QtWidgets.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
 
         self.start, self.end = QtCore.QPoint(), QtCore.QPoint()
         self.langs = langs
@@ -81,16 +81,19 @@ class Snipper(QtWidgets.QWidget):
         QtWidgets.QApplication.processEvents()
 
     def ocrOfDrawnRectangle(self):
-        return get_ocr_result(self.getWindow().copy(
-            min(self.start.x(), self.end.x()),
-            min(self.start.y(), self.end.y()),
-            abs(self.start.x() - self.end.x()),
-            abs(self.start.y() - self.end.y()),
-        ), self.langs)
+        return get_ocr_result(
+            self.getWindow().copy(
+                min(self.start.x(), self.end.x()),
+                min(self.start.y(), self.end.y()),
+                abs(self.start.x() - self.end.x()),
+                abs(self.start.y() - self.end.y()),
+            ),
+            self.langs,
+        )
 
 
 class OneTimeSnipper(Snipper):
-    """ Take an OCR screenshot once then end execution. """
+    """Take an OCR screenshot once then end execution."""
 
     def mouseReleaseEvent(self, event):
         if self.start == self.end:
@@ -108,19 +111,14 @@ class OneTimeSnipper(Snipper):
 
 
 class IntervalSnipper(Snipper):
-    """ 
-    Draw the screenshot rectangle once, then perform OCR there every `interval` 
+    """
+    Draw the screenshot rectangle once, then perform OCR there every `interval`
     ms.
     """
 
     prevOcrResult = None
 
-    def __init__(
-            self,
-            parent,
-            interval,
-            langs=None,
-            flags=Qt.WindowFlags()):
+    def __init__(self, parent, interval, langs=None, flags=Qt.WindowFlags()):
         super().__init__(parent, langs, flags)
         self.interval = interval
 
@@ -155,10 +153,19 @@ class IntervalSnipper(Snipper):
 
 
 arg_parser = argparse.ArgumentParser(description=__doc__)
-arg_parser.add_argument('langs', nargs='?', default="eng",
-                        help='languages passed to tesseract, eg. "eng+fra" (default: %(default)s)')
-arg_parser.add_argument('-i', '--interval', type=int, default=None,
-                        help='select a screen region then take textshots every INTERVAL milliseconds')
+arg_parser.add_argument(
+    "langs",
+    nargs="?",
+    default="eng",
+    help='languages passed to tesseract, eg. "eng+fra" (default: %(default)s)',
+)
+arg_parser.add_argument(
+    "-i",
+    "--interval",
+    type=int,
+    default=None,
+    help="select a screen region then take textshots every INTERVAL milliseconds",
+)
 
 
 def take_textshot(langs, interval):

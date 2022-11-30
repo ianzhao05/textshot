@@ -31,9 +31,7 @@ def get_ocr_result(img, lang=None):
     buffer.close()
 
     try:
-        return pytesseract.image_to_string(
-            pil_img, timeout=5, lang=lang
-        ).strip()
+        return pytesseract.image_to_string(pil_img, timeout=5, lang=lang).strip()
     except RuntimeError as error:
         log_ocr_error(error)
         notify(ocr_error_message(error))
