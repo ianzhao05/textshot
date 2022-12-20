@@ -37,7 +37,7 @@ Take a screenshot and copy its text content to the clipboard. Works on Windows, 
 
 ### Hotkeys
 
-It is recommended to attach a global hotkey to this tool so you can run it without opening a console and typing in the command.
+It is recommended to attach a global hotkey to this tool, so you can run it without opening a console and typing in the command.
 
 On **Windows**, one can accomplish this by using an [AutoHotkey](https://www.autohotkey.com/) script; `textshot.ahk` contains a sample AHK script that can be used.  
 On **Ubuntu**, open the Keyboard Settings, which shows you all the Gnome shortcuts. At the bottom there is a `+` button to add your own shortcuts. Click it and set the command to `/usr/bin/python3 <path-to-textshot.py>`. In case you are using a virtual environment, the `python3` path above should point to the environment's `python3` instead of the global `python3`.  
@@ -45,15 +45,28 @@ The process on other operating systems can be found by searching how to run a sh
 
 ## Installation
 
+### Prerequisites
+
+- Install [Google's Tesseract OCR Engine](https://github.com/tesseract-ocr/tesseract), and ensure that `tesseract` can be reached from the command line by adding the directory to your system path.
+
+### Installation from source
+
 - Install [Python 3](https://www.python.org/downloads/)
 - Clone this repository... `git clone https://github.com/ianzhao05/textshot.git`
-- ...and `cd` into it `cd textshot`
-- (Optional) Create a virtual environment, for example with `python -m venv .venv`, and activate it
-- Install the required packages with `pip install -r requirements.txt`
-- Install [Google's Tesseract OCR Engine](https://github.com/tesseract-ocr/tesseract), and ensure that `tesseract` can be reached from the command line by adding the directory to your system path.
-- `python textshot.py`
+- ...and `cd` into it: `cd textshot`
+- run `pip install .`
+- you may now run`textshot`
 
-**Mac users:** You may need to give permission to capture the screen. You can do so by going to System Preferences > Security & Privacy > Privacy > Screen Recording, then checking the box for Terminal/iTerm.  
-**Linux users:** If the text shows up correctly in the notification, but you cannot paste it, install `xclip` (e.g. with `sudo apt install xclip`).
+### From repository
 
 @rigred has added this to the AUR, so Arch Linux users can install the package `textshot-git` with their AUR helper. For example, `yay -S textshot-git`. This may not be up to date, so if you encounter issues, use the normal installation method above.
+
+## Troubleshooting
+
+### MacOs
+
+You may need to give permission to capture the screen. You can do so by going to System Preferences > Security & Privacy > Privacy > Screen Recording, then checking the box for Terminal/iTerm.  
+
+### Linux
+
+If the text shows up correctly in the notification, but you cannot paste it, install `xclip` (e.g. with `sudo apt install xclip`).
