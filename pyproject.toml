@@ -1,0 +1,33 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "textshot"
+version = "0.0.1"
+authors = [
+  { name="Ian ianzhao05", email="author@example.com" },
+]
+description = "Python tool for grabbing text via screenshot"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dynamic = ["dependencies"]
+
+[project.urls]
+"Homepage" = "https://github.com/ianzhao05/textshot"
+"Bug Tracker" = "https://github.com/ianzhao05/textshot/issues/"
+
+[project.scripts]
+textshot = "textshot.textshot:main"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools.packages.find]
+where = ["textshot"]
+
