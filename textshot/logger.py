@@ -1,4 +1,4 @@
-from messages import ocr_failure_message
+from .messages import ocr_failure_message
 
 
 def log_copied(copied):

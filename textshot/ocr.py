@@ -2,10 +2,10 @@ import pytesseract
 from PIL import Image
 import sys
 import io
-from logger import log_ocr_error, print_error
-from notifications import notify
+from .logger import log_ocr_error, print_error
+from .notifications import notify
 from PyQt5 import QtCore
-from messages import ocr_error_message
+from .messages import ocr_error_message
 
 
 def ensure_tesseract_installed():
