@@ -54,7 +54,7 @@ The process on other operating systems can be found by searching how to run a sh
 - Install [Python 3](https://www.python.org/downloads/)
 - Clone this repository... `git clone https://github.com/ianzhao05/textshot.git`
 - ...and `cd` into it: `cd textshot`
-- run `pip install .`
+- run `pip install .` (for development, you may install with `pip install -e .` which will allow you to test your modifications without reinstall)
 - you may now run`textshot`
 
 ### From repository
