@@ -39,8 +39,8 @@ Take a screenshot and copy its text content to the clipboard. Works on Windows, 
 
 It is recommended to attach a global hotkey to this tool, so you can run it without opening a console and typing in the command.
 
-On **Windows**, one can accomplish this by using an [AutoHotkey](https://www.autohotkey.com/) script; `textshot.ahk` contains a sample AHK script that can be used.  
-On **Ubuntu**, open the Keyboard Settings, which shows you all the Gnome shortcuts. At the bottom there is a `+` button to add your own shortcuts. Click it and set the command to `/usr/bin/python3 <path-to-textshot.py>`. In case you are using a virtual environment, the `python3` path above should point to the environment's `python3` instead of the global `python3`.  
+On **Windows**, one can accomplish this by using an [AutoHotkey](https://www.autohotkey.com/) script; `textshot.ahk` contains a sample AHK script that can be used.
+On **Ubuntu**, open the Keyboard Settings, which shows you all the Gnome shortcuts. At the bottom there is a `+` button to add your own shortcuts. Click it and set the command to `/usr/bin/python3 <path-to-textshot.py>`. In case you are using a virtual environment, the `python3` path above should point to the environment's `python3` instead of the global `python3`.
 The process on other operating systems can be found by searching how to run a shell command with a keyboard shortcut.
 
 ## Installation
@@ -54,8 +54,8 @@ The process on other operating systems can be found by searching how to run a sh
 - Install [Python 3](https://www.python.org/downloads/)
 - Clone this repository... `git clone https://github.com/ianzhao05/textshot.git`
 - ...and `cd` into it: `cd textshot`
-- run `pip install .` (for development, you may install with `pip install -e .` which will allow you to test your modifications without reinstall)
-- you may now run`textshot`
+- Run `pip install .` (for development, you may install with `pip install -e .` which will allow you to test your modifications without reinstall)
+- You may now run `textshot`
 
 ### From repository
 
@@ -63,9 +63,9 @@ The process on other operating systems can be found by searching how to run a sh
 
 ## Troubleshooting
 
-### MacOs
+### macOS
 
-You may need to give permission to capture the screen. You can do so by going to System Preferences > Security & Privacy > Privacy > Screen Recording, then checking the box for Terminal/iTerm.  
+You may need to give permission to capture the screen. You can do so by going to System Preferences > Security & Privacy > Privacy > Screen Recording, then checking the box for Terminal/iTerm.
 
 ### Linux
 

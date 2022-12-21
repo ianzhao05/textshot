@@ -184,9 +184,11 @@ def take_textshot(langs, interval):
 
     sys.exit(app.exec_())
 
+
 def main():
     args = arg_parser.parse_args()
     take_textshot(args.langs, args.interval)
+
 
 if __name__ == "__main__":
     main()
