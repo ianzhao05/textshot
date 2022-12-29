@@ -1,6 +1,6 @@
 from PyQt5 import QtGui, QtWidgets
 
-from messages import ocr_failure_message
+from .messages import ocr_failure_message
 
 try:
     from pynotifier import Notification
