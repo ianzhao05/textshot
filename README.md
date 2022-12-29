@@ -49,9 +49,15 @@ The process on other operating systems can be found by searching how to run a sh
 
 - Install [Google's Tesseract OCR Engine](https://github.com/tesseract-ocr/tesseract), and ensure that `tesseract` can be reached from the command line by adding the directory to your system path.
 
+### Installation with `pip`
+
+    $ pip install textshot
+    $ textshot
+
+You may wish to use a virtual environment if the dependencies conflict with others on your machine.
+
 ### Installation from source
 
-- Install [Python 3](https://www.python.org/downloads/)
 - Clone this repository... `git clone https://github.com/ianzhao05/textshot.git`
 - ...and `cd` into it: `cd textshot`
 - Run `pip install .` (for development, you may install with `pip install -e .` which will allow you to test your modifications without reinstall)
