@@ -13,9 +13,9 @@ Take a screenshot and copy its text content to the clipboard. Works on Windows, 
 
 ## Use
 
-`textshot.py -h` prints the available command line options:
+`textshot -h` prints the available command line options:
 
-    usage: textshot.py [-h] [-i INTERVAL] [langs]
+    usage: textshot [-h] [-i INTERVAL] [langs]
 
     Take a screenshot and copy its text content to the clipboard.
 
@@ -29,18 +29,20 @@ Take a screenshot and copy its text content to the clipboard. Works on Windows, 
 
 ### Examples
 
-- Basic usage: `python textshot.py` opens an overlay where a rectangle can be drawn around the text to be copied.
+- Basic usage: `textshot` opens an overlay where a rectangle can be drawn around the text to be copied.
 
-- Alternate languages: `python textshot.py eng+fra` specifies use of English as the primary language and French as the secondary language. Make sure that the appropriate data files for Tesseract are installed for other languages. A list of all supported languages can be found [here](https://github.com/tesseract-ocr/tesseract/blob/master/doc/tesseract.1.asc#languages-and-scripts).
+- Alternate languages: `textshot eng+fra` specifies use of English as the primary language and French as the secondary language. Make sure that the appropriate data files for Tesseract are installed for other languages. A list of all supported languages can be found [here](https://github.com/tesseract-ocr/tesseract/blob/master/doc/tesseract.1.asc#languages-and-scripts).
 
-- Continuously copy text content: `python textshot.py --interval 200` draw a rectangle at a screen region then copy text from it every 200ms.
+- Continuously copy text content: `textshot --interval 200` draw a rectangle at a screen region then copy text from it every 200ms.
 
 ### Hotkeys
 
 It is recommended to attach a global hotkey to this tool, so you can run it without opening a console and typing in the command.
 
 On **Windows**, one can accomplish this by using an [AutoHotkey](https://www.autohotkey.com/) script; `textshot.ahk` contains a sample AHK script that can be used.
-On **Ubuntu**, open the Keyboard Settings, which shows you all the Gnome shortcuts. At the bottom there is a `+` button to add your own shortcuts. Click it and set the command to `/usr/bin/python3 <path-to-textshot.py>`. In case you are using a virtual environment, the `python3` path above should point to the environment's `python3` instead of the global `python3`.
+
+On **Ubuntu**, open the Keyboard Settings, which shows you all the Gnome shortcuts. At the bottom there is a `+` button to add your own shortcuts. Click it and set the command to `textshot`. In case you are using a virtual environment, the `textshot` path above should point to the environment's `textshot`.
+
 The process on other operating systems can be found by searching how to run a shell command with a keyboard shortcut.
 
 ## Installation
