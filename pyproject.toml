@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "textshot"
-version = "0.1.1"
+version = "0.1.2"
 authors = [{ name = "Ian Zhao", email = "ian.z05@outlook.com" }]
 description = "Python tool for grabbing text via screenshot"
 readme = "README.md"
